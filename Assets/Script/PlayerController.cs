@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour {
 
     public Text winText;
 
+    private bool gameOver = false;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -25,11 +27,14 @@ public class PlayerController : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
+        if (!gameOver)
+        {
+            float moveHorizontal = Input.GetAxis("Horizontal");
+            float moveVertical = Input.GetAxis("Vertical");
 
-        Vector3 movement = new Vector3(moveHorizontal, 0f, moveVertical);
-        rb.AddForce(movement * speed); 
+            Vector3 movement = new Vector3(moveHorizontal, 0f, moveVertical);
+            rb.AddForce(movement * speed);
+        } 
     }
 
     void OnTriggerEnter(Collider other)
@@ -42,6 +47,15 @@ public class PlayerController : MonoBehaviour {
 
             SetCountText();
         }
+
+        else if (other.gameObject.CompareTag("enemy"))
+        {
+            Destroy(gameObject);
+
+            gameOver = true;
+
+            SetGameOverText();
+        }
     }
 
     private void SetCountText()
@@ -51,6 +65,11 @@ public class PlayerController : MonoBehaviour {
         {
             winText.text = "You win!";
         }
+    }
+
+    private void SetGameOverText()
+    {
+        winText.text = "Game Over!";
     }
 }
 /*if I want walls to be obstacle:
